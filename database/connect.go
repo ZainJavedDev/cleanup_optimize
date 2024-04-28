@@ -3,9 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
 
@@ -13,7 +13,7 @@ func Connect() (*sql.DB, error) {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	mysqlDB := os.Getenv("MYSQL_DB")

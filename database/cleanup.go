@@ -2,7 +2,6 @@ package database
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/ZainJavedDev/cleanup_optimize/discord_logger"
@@ -10,10 +9,10 @@ import (
 
 var GAME_MODES = []string{"ranked", "unranked", "turbo"}
 
-func RemoveOldMatches() {
+func RemoveOldMatches() error {
 	db, err := Connect()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	defer db.Close()
@@ -26,12 +25,12 @@ func RemoveOldMatches() {
 			sql := fmt.Sprintf("DELETE FROM %s_matches WHERE start_time < ? LIMIT 1000", game_mode)
 			result, err := db.Exec(sql, sevenDaysAgo)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 
 			rowsAffected, err := result.RowsAffected()
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 			total += rowsAffected
 
@@ -44,4 +43,5 @@ func RemoveOldMatches() {
 		message := fmt.Sprintf("Deleted %d rows.\n", total)
 		discord_logger.SendDiscordMessage(message)
 	}
+	return nil
 }
