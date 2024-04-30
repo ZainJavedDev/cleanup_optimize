@@ -7,7 +7,7 @@ import (
 	"github.com/ZainJavedDev/cleanup_optimize/discord_logger"
 )
 
-var GAME_MODES = []string{"ranked", "unranked", "turbo"}
+var GAME_MODES = []string{"ranked", "unranked", "turbo", "ability_draft"}
 
 func RemoveOldMatches() error {
 	db, err := Connect()
