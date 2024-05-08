@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -15,10 +14,10 @@ type DiscordMessage struct {
 	Content string `json:"content"`
 }
 
-func SendDiscordMessage(message string) {
+func SendDiscordMessage(message string) error {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	var token, webhookId string
@@ -31,12 +30,12 @@ func SendDiscordMessage(message string) {
 	}
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 
 	resp, err := http.Post(webhookURL, "application/json", bytes.NewBuffer(msgBytes))
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 
 	defer resp.Body.Close()
@@ -44,4 +43,5 @@ func SendDiscordMessage(message string) {
 	if resp.StatusCode >= 400 {
 		fmt.Println(resp.Body)
 	}
+	return nil
 }

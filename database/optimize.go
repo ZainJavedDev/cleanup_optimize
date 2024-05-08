@@ -26,7 +26,10 @@ func OptimizeTables() error {
 			return err
 		}
 		message := fmt.Sprintf("Optimized %s tables", game_mode)
-		discord_logger.SendDiscordMessage(message)
+		err = discord_logger.SendDiscordMessage(message)
+		if err != nil {
+			fmt.Println(err)
+		}
 		fmt.Println(message)
 	}
 	return nil
