@@ -15,4 +15,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = database.RemoveBinLogs()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
