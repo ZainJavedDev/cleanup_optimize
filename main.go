@@ -11,11 +11,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = database.OptimizeTables()
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = database.RemoveBinLogs()
+	err = database.VacuumFullTables()
 	if err != nil {
 		log.Fatal(err)
 	}
