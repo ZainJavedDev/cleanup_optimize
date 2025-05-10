@@ -18,12 +18,18 @@ func RemoveOldMatches() error {
 	defer db.Close()
 
 	for _, game_mode := range GAME_MODES {
+		var daysToKeep int
+		if game_mode == "ability_draft" {
+			daysToKeep = 10
+		} else {
+			daysToKeep = 5
+		}
 
-		sevenDaysAgo := time.Now().AddDate(0, 0, -5).Unix()
+		cutoffTime := time.Now().AddDate(0, 0, -daysToKeep).Unix()
 		var total int64
 		for {
 			sql := fmt.Sprintf("DELETE FROM %s_matches WHERE start_time < ? LIMIT 1000", game_mode)
-			result, err := db.Exec(sql, sevenDaysAgo)
+			result, err := db.Exec(sql, cutoffTime)
 			if err != nil {
 				return err
 			}
@@ -34,13 +40,13 @@ func RemoveOldMatches() error {
 			}
 			total += rowsAffected
 
-			fmt.Printf("Deleted %d rows.\n", rowsAffected)
+			fmt.Printf("Deleted %d rows from %s matches.\n", rowsAffected, game_mode)
 
 			if rowsAffected < 1000 {
 				break
 			}
 		}
-		message := fmt.Sprintf("Deleted %d rows.\n", total)
+		message := fmt.Sprintf("Deleted %d rows from %s matches.\n", total, game_mode)
 		discord_logger.SendDiscordMessage(message)
 	}
 	return nil
